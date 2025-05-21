@@ -1,12 +1,11 @@
 public abstract class No {
     protected int[] vInfo;
     protected No[] vLig;
-    protected No pai;
     protected int TL;
 
     public No(){
-        this.vInfo = new int[Arvore.ordem - 1];
-        this.vLig = new No[Arvore.ordem];
+        this.vInfo = new int[Arvore.ordem];
+        this.vLig = new No[Arvore.ordem + 1];
     }
 
     public void setvInfo(int pos, int info) {
@@ -33,14 +32,6 @@ public abstract class No {
         return this.TL;
     }
 
-    public void setPai(No pai) {
-        this.pai = pai;
-    }
-
-    public No getPai() {
-        return this.pai;
-    }
-
     public int procurarPosicao(int info) {
         int pos = 0;
         while(pos < getTL() && info > getvInfo(pos))
@@ -49,7 +40,7 @@ public abstract class No {
     }
 
     public void remanejar(int pos) {
-        vInfo[TL + 1] = vInfo[TL];
+        vLig[TL + 1] = vLig[TL];
         for (int i = TL; i > pos; i--) {
             vInfo[i] = vInfo[i - 1];
             vLig[i] = vLig[i - 1];
@@ -57,6 +48,18 @@ public abstract class No {
     }
 
     public boolean temQueFazerSplit(){
-        return TL == Arvore.ordem - 1;
+        return TL == Arvore.ordem;
+    }
+
+    public void remanejarTirandoPrimeiroItem(boolean remanjeandoNoIntermediario){
+        for (int i = 1; i <= TL; i++) {
+            vInfo[i - 1] = vInfo[i];
+            if(!remanjeandoNoIntermediario)
+                vLig[i] = vLig[i + 1];
+        }
+
+        vInfo[TL] = 0;
+        if(!remanjeandoNoIntermediario)
+            vLig[TL] = null;
     }
 }

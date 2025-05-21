@@ -1,1 +1,5 @@
-public class NoIntermediario extends No {}
+public class NoIntermediario extends No {
+    public NoIntermediario(){
+        super();
+    }
+}
