@@ -11,8 +11,7 @@ public class Arvore {
     {
         No no = raiz;
         int pos;
-        while(no.getvLig(0) != null)
-        {
+        while(no.getvLig(0) != null){
             pos = no.procurarPosicao(info);
             no = no.getvLig(pos);
         }
@@ -31,8 +30,10 @@ public class Arvore {
         return pai;
     }
 
+
     private void split(No no, No pai) {
         No cx1, cx2;
+        int keyPromovida;
 
         if (no instanceof NoFolha) {
             int qtd = getQtdItensSplitFolha();
@@ -42,74 +43,61 @@ public class Arvore {
             for (int i = 0; i < qtd; i++) {
                 cx1.setvInfo(i, no.getvInfo(i));
             }
+            cx1.setTL(qtd);
 
             for (int i = qtd; i < no.getTL(); i++) {
                 cx2.setvInfo(i - qtd, no.getvInfo(i));
             }
+            cx2.setTL(no.getTL() - qtd);
 
-            if(no != raiz){
-                if(((NoFolha) no).getAnt() != null){
+            if (no != raiz) {
+                ((NoFolha) cx1).setAnt(((NoFolha) no).getAnt());
+                if (((NoFolha) no).getAnt() != null) {
                     ((NoFolha) no).getAnt().setProx((NoFolha) cx1);
                 }
-                else {
-                    ((NoFolha) cx1).setAnt(null);
-                }
-                ((NoFolha) cx1).setAnt(((NoFolha) no).getAnt());
 
-                if(((NoFolha) no).getProx() != null){
+                ((NoFolha) cx2).setProx(((NoFolha) no).getProx());
+                if (((NoFolha) no).getProx() != null) {
                     ((NoFolha) no).getProx().setAnt((NoFolha) cx2);
                 }
-                else {
-                    ((NoFolha) cx2).setProx(null);
-                }
-                ((NoFolha) cx2).setProx(((NoFolha) no).getProx());
             }
 
             ((NoFolha) cx1).setProx((NoFolha) cx2);
             ((NoFolha) cx2).setAnt((NoFolha) cx1);
 
-            cx1.setTL(qtd);
-            cx2.setTL(no.getTL() - qtd);
+            keyPromovida = cx2.getvInfo(0);
         }
         else {
             int qtd = getQtdItensSplitIntermediario();
             cx1 = new NoIntermediario();
             cx2 = new NoIntermediario();
 
-            int i;
-            for (i = 0; i < qtd; i++) {
+            for (int i = 0; i < qtd; i++) {
                 cx1.setvInfo(i, no.getvInfo(i));
                 cx1.setvLig(i, no.getvLig(i));
-                cx1.setvLig(i + 1, no.getvLig(i + 1));
             }
-
-            for (int j = i; j < no.getTL(); j++) {
-                cx2.setvInfo(j, no.getvInfo(j));
-                cx2.setvLig(j, no.getvLig(j));
-                cx2.setvLig(j + 1, no.getvLig(j + 1));
-            }
-
+            cx1.setvLig(qtd, no.getvLig(qtd));
             cx1.setTL(qtd);
-            cx2.setTL(no.getTL() - qtd);
 
-            cx2.remanejarTirandoPrimeiroItem(false); //Sobrescreve no primeiro elemento do vInfo
+            keyPromovida = no.getvInfo(qtd);
+
+            for (int i = qtd + 1; i < no.getTL(); i++) {
+                cx2.setvInfo(i - (qtd + 1), no.getvInfo(i));
+                cx2.setvLig(i - (qtd + 1), no.getvLig(i));
+            }
+            cx2.setvLig(no.getTL() - (qtd + 1), no.getvLig(no.getTL()));
+            cx2.setTL(no.getTL() - (qtd + 1));
         }
 
-        if (no == pai || pai == null) {
+        if (no == raiz || pai == null) {
             NoIntermediario novoPai = new NoIntermediario();
-            novoPai.remanejar(0);
-            novoPai.setvInfo(0, cx2.getvInfo(0));
+            novoPai.setvInfo(0, keyPromovida);
             novoPai.setvLig(0, cx1);
             novoPai.setvLig(1, cx2);
             novoPai.setTL(1);
             raiz = novoPai;
-
-            if(no instanceof NoIntermediario){
-                cx2.remanejarTirandoPrimeiroItem(true);
-            }
         }
         else {
-            int keyPromovida = cx2.getvInfo(0);
             int pos = pai.procurarPosicao(keyPromovida);
             pai.remanejar(pos);
             pai.setvInfo(pos, keyPromovida);

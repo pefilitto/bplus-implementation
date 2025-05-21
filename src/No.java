@@ -51,15 +51,11 @@ public abstract class No {
         return TL == Arvore.ordem;
     }
 
-    public void remanejarTirandoPrimeiroItem(boolean remanjeandoNoIntermediario){
+    public void remanejarTirandoPrimeiroItem(){
         for (int i = 1; i <= TL; i++) {
             vInfo[i - 1] = vInfo[i];
-            if(!remanjeandoNoIntermediario)
-                vLig[i] = vLig[i + 1];
         }
 
         vInfo[TL] = 0;
-        if(!remanjeandoNoIntermediario)
-            vLig[TL] = null;
     }
 }
