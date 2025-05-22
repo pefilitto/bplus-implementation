@@ -18,18 +18,32 @@ public class Arvore {
         return no;
     }
 
-    private No buscarPai(No no){
-        No atual = raiz, pai = null;
+    private No buscarPai(No no) {
+        if (no == raiz) return null;
 
-        while(atual.getvLig(0) != null){
-            pai = atual;
-            int pos = atual.procurarPosicao(no.getvInfo(0));
-            atual = atual.getvLig(pos);
-        }
-
-        return pai;
+        return buscarPaiRecursivo(raiz, no);
     }
 
+    private No buscarPaiRecursivo(No atual, No procurado) {
+        if (atual == null || atual instanceof NoFolha) {
+            return null;
+        }
+
+        for (int i = 0; i <= atual.getTL(); i++) {
+            if (atual.getvLig(i) == procurado) {
+                return atual;
+            }
+        }
+
+        for (int i = 0; i <= atual.getTL(); i++) {
+            No resultado = buscarPaiRecursivo(atual.getvLig(i), procurado);
+            if (resultado != null) {
+                return resultado;
+            }
+        }
+
+        return null;
+    }
 
     private void split(No no, No pai) {
         No cx1, cx2;
@@ -89,13 +103,13 @@ public class Arvore {
             cx2.setTL(no.getTL() - (qtd + 1));
         }
 
-        if (no == raiz || pai == null) {
-            NoIntermediario novoPai = new NoIntermediario();
-            novoPai.setvInfo(0, keyPromovida);
-            novoPai.setvLig(0, cx1);
-            novoPai.setvLig(1, cx2);
-            novoPai.setTL(1);
-            raiz = novoPai;
+        if (no == raiz || no == pai) {
+            NoIntermediario novaRaiz = new NoIntermediario();
+            novaRaiz.setvInfo(0, keyPromovida);
+            novaRaiz.setvLig(0, cx1);
+            novaRaiz.setvLig(1, cx2);
+            novaRaiz.setTL(1);
+            raiz = novaRaiz;
         }
         else {
             int pos = pai.procurarPosicao(keyPromovida);
@@ -111,18 +125,18 @@ public class Arvore {
         }
     }
 
-    public void inserir(int info){
-        if(raiz == null){
+    public void inserir(int info) {
+        if (raiz == null) {
             raiz = new NoFolha();
             raiz.setvInfo(0, info);
             raiz.setvLig(0, null);
             raiz.setvLig(1, null);
             raiz.setTL(1);
         }
-        else{
+        else {
             No folha = navegarAteFolha(info);
             int pos = folha.procurarPosicao(info);
-            if(folha.getTL() < Arvore.ordem){
+            if (folha.getTL() < Arvore.ordem) {
                 folha.remanejar(pos);
                 folha.setvInfo(pos, info);
                 folha.setTL(folha.getTL() + 1);
