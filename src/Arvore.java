@@ -54,30 +54,7 @@ public class Arvore {
             cx1 = new NoFolha();
             cx2 = new NoFolha();
 
-            for (int i = 0; i < qtd; i++) {
-                cx1.setvInfo(i, no.getvInfo(i));
-            }
-            cx1.setTL(qtd);
-
-            for (int i = qtd; i < no.getTL(); i++) {
-                cx2.setvInfo(i - qtd, no.getvInfo(i));
-            }
-            cx2.setTL(no.getTL() - qtd);
-
-            if (no != raiz) {
-                ((NoFolha) cx1).setAnt(((NoFolha) no).getAnt());
-                if (((NoFolha) no).getAnt() != null) {
-                    ((NoFolha) no).getAnt().setProx((NoFolha) cx1);
-                }
-
-                ((NoFolha) cx2).setProx(((NoFolha) no).getProx());
-                if (((NoFolha) no).getProx() != null) {
-                    ((NoFolha) no).getProx().setAnt((NoFolha) cx2);
-                }
-            }
-
-            ((NoFolha) cx1).setProx((NoFolha) cx2);
-            ((NoFolha) cx2).setAnt((NoFolha) cx1);
+            criaCaixa1Caixa2NoFolha(no, cx1, cx2, qtd);
 
             keyPromovida = cx2.getvInfo(0);
         }
@@ -86,21 +63,9 @@ public class Arvore {
             cx1 = new NoIntermediario();
             cx2 = new NoIntermediario();
 
-            for (int i = 0; i < qtd; i++) {
-                cx1.setvInfo(i, no.getvInfo(i));
-                cx1.setvLig(i, no.getvLig(i));
-            }
-            cx1.setvLig(qtd, no.getvLig(qtd));
-            cx1.setTL(qtd);
+            criaCaixa1Caixa2NoIntermediario(no, cx1, cx2, qtd);
 
             keyPromovida = no.getvInfo(qtd);
-
-            for (int i = qtd + 1; i < no.getTL(); i++) {
-                cx2.setvInfo(i - (qtd + 1), no.getvInfo(i));
-                cx2.setvLig(i - (qtd + 1), no.getvLig(i));
-            }
-            cx2.setvLig(no.getTL() - (qtd + 1), no.getvLig(no.getTL()));
-            cx2.setTL(no.getTL() - (qtd + 1));
         }
 
         if (no == raiz || no == pai) {
@@ -123,6 +88,49 @@ public class Arvore {
                 split(pai, buscarPai(pai));
             }
         }
+    }
+
+    private void criaCaixa1Caixa2NoIntermediario(No no, No cx1, No cx2, int qtd) {
+        for (int i = 0; i < qtd; i++) {
+            cx1.setvInfo(i, no.getvInfo(i));
+            cx1.setvLig(i, no.getvLig(i));
+        }
+        cx1.setvLig(qtd, no.getvLig(qtd));
+        cx1.setTL(qtd);
+
+        for (int i = qtd + 1; i < no.getTL(); i++) {
+            cx2.setvInfo(i - (qtd + 1), no.getvInfo(i));
+            cx2.setvLig(i - (qtd + 1), no.getvLig(i));
+        }
+        cx2.setvLig(no.getTL() - (qtd + 1), no.getvLig(no.getTL()));
+        cx2.setTL(no.getTL() - (qtd + 1));
+    }
+
+    private void criaCaixa1Caixa2NoFolha(No no, No cx1, No cx2, int qtd) {
+        for (int i = 0; i < qtd; i++) {
+            cx1.setvInfo(i, no.getvInfo(i));
+        }
+        cx1.setTL(qtd);
+
+        for (int i = qtd; i < no.getTL(); i++) {
+            cx2.setvInfo(i - qtd, no.getvInfo(i));
+        }
+        cx2.setTL(no.getTL() - qtd);
+
+        if (no != raiz) {
+            ((NoFolha) cx1).setAnt(((NoFolha) no).getAnt());
+            if (((NoFolha) no).getAnt() != null) {
+                ((NoFolha) no).getAnt().setProx((NoFolha) cx1);
+            }
+
+            ((NoFolha) cx2).setProx(((NoFolha) no).getProx());
+            if (((NoFolha) no).getProx() != null) {
+                ((NoFolha) no).getProx().setAnt((NoFolha) cx2);
+            }
+        }
+
+        ((NoFolha) cx1).setProx((NoFolha) cx2);
+        ((NoFolha) cx2).setAnt((NoFolha) cx1);
     }
 
     public void inserir(int info) {
