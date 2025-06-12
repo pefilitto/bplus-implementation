@@ -34,7 +34,7 @@ public abstract class No {
 
     public int procurarPosicao(int info) {
         int pos = 0;
-        while(pos < getTL() && info > getvInfo(pos))
+        while(pos < getTL() && info >= getvInfo(pos))
             pos++;
         return pos;
     }
@@ -51,11 +51,8 @@ public abstract class No {
         return TL == Arvore.ordem;
     }
 
-    public void remanejarTirandoPrimeiroItem(){
-        for (int i = 1; i <= TL; i++) {
-            vInfo[i - 1] = vInfo[i];
-        }
-
-        vInfo[TL] = 0;
+    public boolean temUnderflow() {
+        int minItens = (int) Math.ceil((double) Arvore.ordem / 2) - 1;
+        return TL < minItens;
     }
 }
